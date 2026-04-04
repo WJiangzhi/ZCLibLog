@@ -73,27 +73,25 @@ RingBuffer<std::string> buf(5);
 
 inline ZCLibLog::executor& ringbuf() {
     using namespace ZCLibLog;
-    static executor inst = [](ELString msg, ELogLevel lv) {
+    static executor inst = [](ELString msg, ELogLevel) {
         buf.push(msg);
     };
     return inst;
 }
 
-std::stringstream oss;
-
 int main() {
     //Logger.bind_executor(ZCLibLog::executors::cstdio());
     Logger.bind_executor(ringbuf());
-    Logger.bind_executor(ZCLibLog::executors::ostream(oss));
+    Logger.bind_executor(ZCLibLog::executors::cstdout());
 
-    Logger.INFO(": Hello {}!", ZCLibLog::PROJECT_NAME);
+    Logger.INFO("Hello {}!", ZCLibLog::PROJECT_NAME);
 
-    std::cout << std::endl;
+    /*std::cout << std::endl;
     for (const auto& item : buf) {
         std::cout << item << std::endl;
     }
     std::cout << std::endl;
-    std::cout << oss.str() << std::endl;
+    std::cout << oss.str() << std::endl;*/
 
     return 0;
 }

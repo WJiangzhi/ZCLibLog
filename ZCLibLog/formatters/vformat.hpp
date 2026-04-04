@@ -16,10 +16,15 @@ namespace ZCLibLog::formatters {
         template <typename Fmt, typename... Args>
         static std::string do_format(FLogPack pack, Fmt fmt, Args&&... args) {
             std::string f_msg;
-            try {
-                f_msg = std::vformat(fmt, std::make_format_args(std::forward<Args&&>(args)...));
-            } catch (const std::format_error&) {
-                return {};
+            if (sizeof...(args) == 0) {
+                f_msg = fmt;
+            }
+            else {
+                try {
+                    f_msg = std::vformat(fmt, std::make_format_args(std::forward<Args&&>(args)...));
+                } catch (const std::format_error&) {
+                    return {};
+                }
             }
 
             const auto tp = std::chrono::system_clock::time_point(std::chrono::milliseconds(pack.time));

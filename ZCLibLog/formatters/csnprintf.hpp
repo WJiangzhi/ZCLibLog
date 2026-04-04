@@ -18,11 +18,18 @@ namespace ZCLibLog {
             template<typename... Args>
             static std::string do_format(FLogPack pack, const char* fmt, Args&&... args) {
                 thread_local std::array<char, 4096> buffer;
-                int len = std::snprintf(buffer.data(), buffer.size(), fmt, std::forward<Args>(args)...);
-                if (len < 0) return {};
-                if (len >= static_cast<int>(buffer.size())) len = buffer.size() - 1;
-                const std::string f_msg(buffer.data(), len);
+                int len{};
 
+                std::string f_msg;
+                if (sizeof...(args) == 0) {
+                    f_msg = fmt;
+                }
+                else {
+                    len = std::snprintf(buffer.data(), buffer.size(), fmt, std::forward<Args>(args)...);
+                    if (len < 0) return {};
+                    if (len >= static_cast<int>(buffer.size())) len = buffer.size() - 1;
+                    f_msg = std::string(buffer.data(), len);
+                }
                 auto t = static_cast<std::time_t>(pack.time / 1000);
                 const auto ms = static_cast<short>(pack.time % 1000);
                 std::tm tm{};
