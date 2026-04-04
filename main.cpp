@@ -86,7 +86,8 @@ int main() {
     Logger.bind_executor(ringbuf());
     Logger.bind_executor(ZCLibLog::executors::ostream(oss));
 
-    Logger.INFO(": Hello {}!", ZCLibLog::PROJECT_NAME);
+    Logger.INFO("Hello {}!", ZCLibLog::PROJECT_NAME);
+    Logger.INFO("Hello");
 
     std::cout << std::endl;
     for (const auto& item : buf) {
